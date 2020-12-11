@@ -47,7 +47,7 @@ import XCTest
 class CacheTestCase: BaseTestCase {
     // MARK: -
 
-    struct CacheControl {
+    enum CacheControl {
         static let publicControl = "public"
         static let privateControl = "private"
         static let maxAgeNonExpired = "max-age=3600"
@@ -143,7 +143,7 @@ class CacheTestCase: BaseTestCase {
                                            self.timestamps[cacheControl] = timestamp
 
                                            dispatchGroup.leave()
-            })
+                                       })
 
             requests[cacheControl] = request
         }
@@ -189,7 +189,7 @@ class CacheTestCase: BaseTestCase {
         request.response(queue: queue,
                          completionHandler: { response in
                              completion(response.request, response.response)
-        })
+                         })
 
         return urlRequest
     }

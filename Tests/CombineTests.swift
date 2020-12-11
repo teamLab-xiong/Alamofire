@@ -283,7 +283,7 @@ final class DataRequestCombineTests: CombineTestCase {
                           receivedOnMain = Thread.isMainThread
                           response = $0
                           responseReceived.fulfill()
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -306,14 +306,14 @@ final class DataRequestCombineTests: CombineTestCase {
             AF.request(URLRequest.makeHTTPBinRequest())
                 .publishDecodable(type: HTTPBinResponse.self, queue: queue)
                 .sink(receiveCompletion: { _ in
-                    dispatchPrecondition(condition: .onQueue(queue))
-                    completionReceived.fulfill()
-                },
+                          dispatchPrecondition(condition: .onQueue(queue))
+                          completionReceived.fulfill()
+                      },
                       receiveValue: {
-                    dispatchPrecondition(condition: .onQueue(queue))
-                    response = $0
-                    responseReceived.fulfill()
-                })
+                          dispatchPrecondition(condition: .onQueue(queue))
+                          response = $0
+                          responseReceived.fulfill()
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -341,7 +341,7 @@ final class DataRequestCombineTests: CombineTestCase {
                           receivedOnMain = Thread.isMainThread
                           response = $0
                           responseReceived.fulfill()
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -352,7 +352,11 @@ final class DataRequestCombineTests: CombineTestCase {
     }
 
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
-    func testThatPublishedDataRequestCanBeCancelledAutomatically() {
+    func testThatPublishedDataRequestCanBeCancelledAutomatically() throws {
+        if #available(macOS 11, iOS 14, watchOS 7, tvOS 14, *) {
+            throw XCTSkip("Skip on 2020 OS versions, as Combine cancellation no longer emits a value.")
+        }
+
         // Given
         let responseReceived = expectation(description: "response should be received")
         let completionReceived = expectation(description: "stream should complete")
@@ -489,7 +493,7 @@ final class DataStreamRequestCombineTests: CombineTestCase {
                           case .complete:
                               responseReceived.fulfill()
                           }
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -518,7 +522,7 @@ final class DataStreamRequestCombineTests: CombineTestCase {
                           case .complete:
                               responseReceived.fulfill()
                           }
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -546,7 +550,7 @@ final class DataStreamRequestCombineTests: CombineTestCase {
                           case .complete:
                               responseReceived.fulfill()
                           }
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -574,7 +578,7 @@ final class DataStreamRequestCombineTests: CombineTestCase {
                           case .complete:
                               responseReceived.fulfill()
                           }
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -612,7 +616,7 @@ final class DataStreamRequestCombineTests: CombineTestCase {
                           case .complete:
                               publishedResponseReceived.fulfill()
                           }
-            })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -638,7 +642,7 @@ final class DataStreamRequestCombineTests: CombineTestCase {
                       receiveValue: { received in
                           result = received
                           responseReceived.fulfill()
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -663,7 +667,7 @@ final class DataStreamRequestCombineTests: CombineTestCase {
                       receiveValue: { received in
                           result = received
                           responseReceived.fulfill()
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -689,7 +693,7 @@ final class DataStreamRequestCombineTests: CombineTestCase {
                       receiveValue: { received in
                           response = received
                           responseReceived.fulfill()
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -749,7 +753,7 @@ final class DataStreamRequestCombineTests: CombineTestCase {
                                case .complete:
                                    responseReceived.fulfill()
                                }
-            })
+                           })
         }
 
         let stateAfterSubscription = request.state
@@ -785,7 +789,7 @@ final class DataStreamRequestCombineTests: CombineTestCase {
                           case .complete:
                               responseReceived.fulfill()
                           }
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -808,18 +812,18 @@ final class DataStreamRequestCombineTests: CombineTestCase {
             AF.streamRequest(URLRequest.makeHTTPBinRequest())
                 .publishDecodable(type: HTTPBinResponse.self, queue: queue)
                 .sink(receiveCompletion: { _ in
-                    dispatchPrecondition(condition: .onQueue(queue))
-                    completionReceived.fulfill()
-                },
+                          dispatchPrecondition(condition: .onQueue(queue))
+                          completionReceived.fulfill()
+                      },
                       receiveValue: { stream in
-                    dispatchPrecondition(condition: .onQueue(queue))
-                    switch stream.event {
-                    case let .stream(value):
-                        result = value
-                    case .complete:
-                        responseReceived.fulfill()
-                    }
-                })
+                          dispatchPrecondition(condition: .onQueue(queue))
+                          switch stream.event {
+                          case let .stream(value):
+                              result = value
+                          case .complete:
+                              responseReceived.fulfill()
+                          }
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -851,7 +855,7 @@ final class DataStreamRequestCombineTests: CombineTestCase {
                           case .complete:
                               responseReceived.fulfill()
                           }
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -862,7 +866,11 @@ final class DataStreamRequestCombineTests: CombineTestCase {
     }
 
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
-    func testThatPublishedDataStreamRequestCanBeCancelledAutomatically() {
+    func testThatPublishedDataStreamRequestCanBeCancelledAutomatically() throws {
+        if #available(macOS 11, iOS 14, watchOS 7, tvOS 14, *) {
+            throw XCTSkip("Skip on 2020 OS versions, as Combine cancellation no longer emits a value.")
+        }
+
         // Given
         let responseReceived = expectation(description: "response should be received")
         let completionReceived = expectation(description: "stream should complete")
@@ -933,7 +941,7 @@ final class DataStreamRequestCombineTests: CombineTestCase {
                           firstCompletion = first
                           secondCompletion = second
                           responseReceived.fulfill()
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -1083,6 +1091,27 @@ final class DownloadRequestCombineTests: CombineTestCase {
     }
 
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+    func testThatDownloadRequestCanPublishURL() {
+        // Given
+        let responseReceived = expectation(description: "response should be received")
+        let completionReceived = expectation(description: "publisher should complete")
+        var response: DownloadResponse<URL, AFError>?
+
+        // When
+        store {
+            AF.download(URLRequest.makeHTTPBinRequest())
+                .publishURL()
+                .sink(receiveCompletion: { _ in completionReceived.fulfill() },
+                      receiveValue: { response = $0; responseReceived.fulfill() })
+        }
+
+        waitForExpectations(timeout: timeout)
+
+        // Then
+        XCTAssertTrue(response?.result.isSuccess == true)
+    }
+
+    @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
     func testThatDownloadRequestCanPublishWithMultipleHandlers() {
         // Given
         let handlerResponseReceived = expectation(description: "handler response should be received")
@@ -1205,7 +1234,7 @@ final class DownloadRequestCombineTests: CombineTestCase {
                           receivedOnMain = Thread.isMainThread
                           response = $0
                           responseReceived.fulfill()
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -1228,14 +1257,14 @@ final class DownloadRequestCombineTests: CombineTestCase {
             AF.download(URLRequest.makeHTTPBinRequest())
                 .publishDecodable(type: HTTPBinResponse.self, queue: queue)
                 .sink(receiveCompletion: { _ in
-                    dispatchPrecondition(condition: .onQueue(queue))
-                    completionReceived.fulfill()
-                },
+                          dispatchPrecondition(condition: .onQueue(queue))
+                          completionReceived.fulfill()
+                      },
                       receiveValue: {
-                    dispatchPrecondition(condition: .onQueue(queue))
-                    response = $0
-                    responseReceived.fulfill()
-                })
+                          dispatchPrecondition(condition: .onQueue(queue))
+                          response = $0
+                          responseReceived.fulfill()
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -1263,7 +1292,7 @@ final class DownloadRequestCombineTests: CombineTestCase {
                           receivedOnMain = Thread.isMainThread
                           response = $0
                           responseReceived.fulfill()
-                })
+                      })
         }
 
         waitForExpectations(timeout: timeout)
@@ -1274,7 +1303,11 @@ final class DownloadRequestCombineTests: CombineTestCase {
     }
 
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
-    func testThatPublishedDownloadRequestCanBeCancelledAutomatically() {
+    func testThatPublishedDownloadRequestCanBeCancelledAutomatically() throws {
+        if #available(macOS 11, iOS 14, watchOS 7, tvOS 14, *) {
+            throw XCTSkip("Skip on 2020 OS versions, as Combine cancellation no longer emits a value.")
+        }
+
         // Given
         let responseReceived = expectation(description: "response should be received")
         let completionReceived = expectation(description: "stream should complete")
